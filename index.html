@@ -13,10 +13,7 @@
       padding: 0;
       text-align: center;
     }
-    h1 {
-      margin: 20px 0 10px;
-      color: #ffcc00;
-    }
+    h1 { margin: 20px 0 10px; color: #ffcc00; }
     #mission-info {
       text-align: left;
       background: #2a2a2a;
@@ -26,16 +23,8 @@
       line-height: 1.6;
       font-size: 14px;
     }
-    #mission-info h2 {
-      margin-top: 0;
-      font-size: 16px;
-      color: #00ffcc;
-    }
-    #completed-count {
-      margin: 15px 0;
-      font-size: 18px;
-      color: #00ff99;
-    }
+    #mission-info h2 { margin-top: 0; font-size: 16px; color: #00ffcc; }
+    #completed-count { margin: 15px 0; font-size: 18px; color: #00ff99; }
     .completed-container {
       margin: 20px;
       padding: 10px;
@@ -43,92 +32,18 @@
       border-radius: 8px;
       background: #2a2a2a;
     }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 10px;
-      padding: 10px;
-    }
-    .card {
-      background: #2a2a2a;
-      border-radius: 10px;
-      padding: 10px;
-      cursor: pointer;
-      text-align: center;
-    }
-    .name {
-      margin-bottom: 8px;
-    }
-    .bulbs {
-      display: flex;
-      justify-content: center;
-      gap: 5px;
-    }
-    .bulb {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: #444;
-      box-shadow: 0 0 5px #000;
-    }
-    .bulb.on {
-      background: #ffcc00;
-      box-shadow: 0 0 10px #ffcc00, 0 0 20px #ffcc00;
-    }
-    /* 모달 스타일 */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 10;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: #2a2a2a;
-      padding: 20px;
-      border-radius: 8px;
-      width: 80%;
-      max-width: 400px;
-      color: #fff;
-      text-align: left;
-      position: relative;
-    }
-    .close {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 20px;
-      cursor: pointer;
-      color: #ff6666;
-    }
-    /* 체크박스 크기 키우기 */
-    .mission {
-      width: 20px;
-      height: 20px;
-      transform: scale(1.3);
-      margin-right: 8px;
-      cursor: pointer;
-    }
-    label {
-      display: flex;
-      align-items: center;
-      margin: 8px 0;
-      font-size: 16px;
-    }
-    .close-btn {
-      margin-top: 15px;
-      padding: 10px;
-      background: #ffcc00;
-      color: #222;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
-      font-weight: bold;
-    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; padding: 10px; }
+    .card { background: #2a2a2a; border-radius: 10px; padding: 10px; cursor: pointer; text-align: center; }
+    .name { margin-bottom: 8px; }
+    .bulbs { display: flex; justify-content: center; gap: 5px; }
+    .bulb { width: 20px; height: 20px; border-radius: 50%; background: #444; box-shadow: 0 0 5px #000; }
+    .bulb.on { background: #ffcc00; box-shadow: 0 0 10px #ffcc00, 0 0 20px #ffcc00; }
+    .modal { display: none; position: fixed; z-index: 10; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
+    .modal-content { background: #2a2a2a; padding: 20px; border-radius: 8px; width: 80%; max-width: 400px; color: #fff; text-align: left; position: relative; }
+    .close { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; color: #ff6666; }
+    .mission { width: 20px; height: 20px; transform: scale(1.3); margin-right: 8px; cursor: pointer; }
+    label { display: flex; align-items: center; margin: 8px 0; font-size: 16px; }
+    .close-btn { margin-top: 15px; padding: 10px; background: #ffcc00; color: #222; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -170,7 +85,25 @@
     </div>
   </div>
 
-  <script>
+  <!-- Firebase Firestore 연동 -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // 🔑 Firebase 설정 (본인 프로젝트 값으로 교체)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAR4h5kM47W1d7wbrWPlP4FD3QAzH_C42E",
+  authDomain: "church-f04c3.firebaseapp.com",
+  projectId: "church-f04c3",
+  storageBucket: "church-f04c3.firebasestorage.app",
+  messagingSenderId: "717497529067",
+  appId: "1:717497529067:web:25b471e854fb2a670fc4ae",
+  measurementId: "G-F60K85LLTR"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     const names = [
       "김현진","최재영","최성영","송승재","안재혁","서채일","장하현","위건오","승병국","박진우",
       "남재봉","정재욱","김지훈","심규민","박시원","박지우","강창우","손탁안","장인수","선주향",
@@ -179,20 +112,28 @@
       "한우리","이미연"
     ];
 
-    // 저장된 데이터 불러오기
-    let savedState = localStorage.getItem("missionState");
-    const state = savedState ? JSON.parse(savedState) : {};
-    names.forEach(n => {
-      if (!state[n]) state[n] = [false,false,false];
-    });
-
+    const state = {};
     const mainGrid = document.getElementById("main-grid");
     const completedGrid = document.getElementById("completed-grid");
     const completedContainer = document.getElementById("completed-container");
     const completedCount = document.getElementById("completed-count");
 
-    function saveState() {
-      localStorage.setItem("missionState", JSON.stringify(state));
+    // Firestore 저장
+    async function saveState(name, missions) {
+      await setDoc(doc(db, "missions", name), { missions });
+    }
+
+    // Firestore 불러오기
+    async function loadState(name) {
+      const snap = await getDoc(doc(db, "missions", name));
+      return snap.exists() ? snap.data().missions : [false,false,false];
+    }
+
+    async function initState() {
+      for (let n of names) {
+        state[n] = await loadState(n);
+      }
+      render();
     }
 
     function render() {
@@ -238,7 +179,7 @@
       completedCount.innerText = `완료한 사람: ${completed.length}명`;
     }
 
-    // 모달 로직
+    // 모달
     const modal = document.getElementById("missionModal");
     const modalName = document.getElementById("modalName");
     const missionInputs = document.querySelectorAll(".mission");
@@ -252,23 +193,21 @@
       modalName.innerText = name;
       missionInputs.forEach((input, i) => {
         input.checked = state[name][i];
-        input.onchange = () => {
+        input.onchange = async () => {
           state[name][i] = input.checked;
-          saveState(); // 자동 저장
+          await saveState(name, state[name]); // Firestore 저장
           render();
         };
       });
     }
 
-    function closeModal() {
-      modal.style.display = "none";
-    }
-
+    function closeModal() { modal.style.display = "none"; }
     closeBtn.onclick = closeModal;
     closeButton.onclick = closeModal;
     window.onclick = e => { if (e.target == modal) closeModal(); };
 
-    render();
+    // 실행
+    initState();
   </script>
 </body>
 </html>
