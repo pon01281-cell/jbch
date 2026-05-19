@@ -3,23 +3,41 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>생명의 항해 - 타이타닉을 구하라</title>
-  <!-- Tailwind CSS -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>마음의 타이타닉 (Surrender & Rise)</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- React & ReactDOM CDN -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <!-- Babel CDN (React JSX 컴파일용) -->
+  <!-- Babel CDN (React JSX 실시간 브라우저 컴파일러) -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- 🌟 구글 Firebase SDK 라이브러리 탑재 (호환성 최강 Compat 버전) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
+<body class="bg-slate-950 text-slate-100 min-h-screen relative overflow-x-hidden overflow-y-auto select-none">
   
   <div id="root"></div>
 
   <!-- React Application Code (Babel Script) -->
   <script type="text/babel">
     const { useState, useEffect, useRef, useMemo } = React;
+
+    // --- ⚠️ 중요: 구글 Firebase에서 발급받은 Config 값을 여기에 붙여넣으세요! ---
+    // 아래 정보를 채워 넣으면 자동으로 전 세계 실시간 온라인 연동망이 가동됩니다.
+    // 만약 apiKey가 비어있으면 오작동 없이 스마트하게 '단독 무선 데모 모드'로 가동됩니다.
+    const firebaseConfig = {
+  apiKey: "AIzaSyD9m0omYwWSsdpWyAIjHqHE_6ZHxnDQ8F4",
+  authDomain: "church-71d03.firebaseapp.com",
+  projectId: "church-71d03",
+  storageBucket: "church-71d03.firebasestorage.app",
+  messagingSenderId: "700068495005",
+  appId: "1:700068495005:web:43a7cc6cc6721510ac1e74",
+  measurementId: "G-4LY0TV8LQN"
+};
 
     // --- Web Audio API 기반 성스러운 신디사이저 효과음 엔진 ---
     const playSound = (type) => {
@@ -30,59 +48,62 @@
         const now = ctx.currentTime;
         
         if (type === 'splash') {
+          // 바다 깊이 묵직하게 가라앉으며 퍼지는 파동 효과음
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(125, now);
-          osc.frequency.exponentialRampToValueAtTime(32, now + 1.2);
+          osc.frequency.setValueAtTime(110, now);
+          osc.frequency.exponentialRampToValueAtTime(28, now + 1.3);
           
-          gain.gain.setValueAtTime(0.4, now);
-          gain.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
+          gain.gain.setValueAtTime(0.45, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 1.3);
           
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.start();
-          osc.stop(now + 1.3);
+          osc.stop(now + 1.4);
         } else if (type === 'chime') {
-          const notes = [523.25, 659.25, 783.99, 1046.50];
+          // 맑고 청아한 천상의 하모니 종소리 (단계 마일스톤 도달)
+          const notes = [523.25, 659.25, 783.99, 1046.50]; // 도, 미, 솔, 도
           notes.forEach((freq, idx) => {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.type = 'triangle';
             osc.frequency.setValueAtTime(freq, now + idx * 0.12);
             
-            gain.gain.setValueAtTime(0.2, now + idx * 0.12);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.12 + 0.8);
+            gain.gain.setValueAtTime(0.18, now + idx * 0.12);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.12 + 0.85);
             
             osc.connect(gain);
             gain.connect(ctx.destination);
             osc.start(now + idx * 0.12);
-            osc.stop(now + idx * 0.12 + 0.9);
+            osc.stop(now + idx * 0.12 + 0.95);
           });
         } else if (type === 'triumph') {
+          // 전단계 참회 완료 시 울려퍼지는 찬란한 구원 팡파레
           const chords = [261.63, 329.63, 392.00, 523.25];
           chords.forEach((freq) => {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.type = 'sine';
             osc.frequency.setValueAtTime(freq, now);
-            osc.frequency.exponentialRampToValueAtTime(freq * 1.8, now + 1.8);
+            osc.frequency.exponentialRampToValueAtTime(freq * 1.8, now + 2.0);
             
             gain.gain.setValueAtTime(0.12, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 2.2);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 2.4);
             
             osc.connect(gain);
             gain.connect(ctx.destination);
             osc.start();
-            osc.stop(now + 2.3);
+            osc.stop(now + 2.5);
           });
         }
       } catch (e) {
-        console.warn("오디오 엔진 작동 실패:", e);
+        console.warn("오디오 엔진 동작 비활성화:", e);
       }
     };
 
-    // --- 13가지 정밀 주제 가이드 정의 ---
+    // --- 수련회 전용 성찰 이미지 기준 13가지 주제 카테고리 정의 ---
     const SURRENDER_CATEGORIES = [
       {
         id: 'word',
@@ -138,7 +159,7 @@
         icon: '💵',
         bgColor: 'from-green-500/10 to-emerald-500/5',
         borderColor: 'border-green-500/30',
-        examples: '돈에 걱정 없는 안정적인 삶, 연봉이나 월세 걱, 결혼자금, 적금, 탐심, 부모님 용돈, 내가 먹고/사고 싶은 물질적 욕구(옷, IT 기기, 차, 명품), 나만을 위한 과도한 투자 등'
+        examples: '돈에 걱정 없는 안정적인 삶, 연봉이나 월세 걱정, 결혼자금, 적금, 탐심, 부모님 용돈, 내가 먹고/사고 싶은 물질적 욕구(옷, IT 기기, 차, 명품), 나만을 위한 과도한 투자 등'
       },
       {
         id: 'flesh',
@@ -191,9 +212,6 @@
     ];
 
     function App() {
-      // 깃허브 배포 및 단독 구동을 위해 기본적으로 로컬 모드로 완벽하게 자동 시뮬레이션되도록 설정했습니다.
-      // Firebase를 연동하고 싶으시면 아래에 Config를 입력하시면 됩니다.
-      const appId = 'titanic-retreat-ultimate';
       const [role, setRole] = useState('select'); 
       const [globalStage, setGlobalStage] = useState(1);
       const [participants, setParticipants] = useState([]);
@@ -201,7 +219,7 @@
 
       const [hostMode, setHostMode] = useState('collective');
       const [selectedParticipantId, setSelectedParticipantId] = useState(null);
-      const [manualStage, setManualStage] = useState(0);
+      const [manualStage, setManualStage] = useState(0); 
 
       const [nickname, setNickname] = useState('');
       const [hasRegistered, setHasRegistered] = useState(false);
@@ -214,8 +232,118 @@
       const [flingingCards, setFlingingCards] = useState([]);
       const [splashes, setSplashes] = useState([]);
       const [floatingWords, setFloatingWords] = useState([]);
+      const [activeNotice, setActiveNotice] = useState(null);
 
+      const [isOnline, setIsOnline] = useState(false);
+      const isInitialLoadRef = useRef(true);
+      const seenSurrenderIdsRef = useRef(new Set());
       const lastAudioTimeRef = useRef(0);
+      const dbRef = useRef(null);
+
+      // --- 실시간 알림 시스템 ---
+      const [toastMessage, setToastMessage] = useState('');
+      const showToast = (msg) => {
+        setToastMessage(msg);
+        setTimeout(() => setToastMessage(''), 3000);
+      };
+
+      // --- 🌟 Firebase 엔진 초기화 및 리스너 등록 ---
+      useEffect(() => {
+        // config에 값들이 기재되었는지 감지
+        if (firebaseConfig && firebaseConfig.apiKey && firebaseConfig.apiKey !== "") {
+          try {
+            // 중복 이니셜라이즈 차단
+            let app;
+            if (!firebase.apps.length) {
+              app = firebase.initializeApp(firebaseConfig);
+            } else {
+              app = firebase.app();
+            }
+            
+            const db = firebase.firestore();
+            dbRef.current = db;
+            setIsOnline(true);
+
+            // A. 익명 로그인 활성화
+            firebase.auth().signInAnonymously()
+              .then(() => {
+                showToast("🛰️ 구글 서버와 성공적으로 연결되어 실시간 온라인 모드가 가동됩니다.");
+              })
+              .catch((err) => {
+                console.warn("로그인 실패, 로컬 시뮬레이션으로 우회합니다.", err);
+                setIsOnline(false);
+              });
+
+            // B. 사회자 통제 진도 리스너 연결
+            const sessionRef = db.collection('artifacts').doc(appId).collection('public').doc('session');
+            const unsubSession = sessionRef.onSnapshot((doc) => {
+              if (doc.exists && doc.data().currentStage !== undefined) {
+                setGlobalStage(doc.data().currentStage);
+              } else {
+                sessionRef.set({ currentStage: 1 });
+              }
+            });
+
+            // C. 가입 회원 실시간 통계 리스너 연결
+            const unsubParticipants = db.collection('artifacts').doc(appId).collection('participants')
+              .onSnapshot((snap) => {
+                const list = [];
+                snap.forEach((d) => list.push({ id: d.id, ...d.data() }));
+                setParticipants(list);
+              });
+
+            // D. 참회 투하 실시간 기재 리스너 연결
+            const unsubSurrenders = db.collection('artifacts').doc(appId).collection('surrenders')
+              .onSnapshot((snap) => {
+                const list = [];
+                const newItems = [];
+                snap.forEach((d) => {
+                  const docId = d.id;
+                  const data = d.data();
+                  list.push({ id: docId, ...data });
+
+                  if (isInitialLoadRef.current) {
+                    seenSurrenderIdsRef.current.add(docId);
+                  } else {
+                    if (!seenSurrenderIdsRef.current.has(docId)) {
+                      seenSurrenderIdsRef.current.add(docId);
+                      newItems.push({ id: docId, ...data });
+                    }
+                  }
+                });
+
+                if (isInitialLoadRef.current) {
+                  isInitialLoadRef.current = false;
+                }
+
+                // 최근 전송순으로 정렬
+                list.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+                setSurrenders(list);
+
+                // 30인 동시 다발 투하 병목 차단 스태거 발사
+                newItems.forEach((item, index) => {
+                  setTimeout(() => {
+                    triggerPhysicalLaunch(item);
+                  }, index * 400);
+                });
+              });
+
+            return () => {
+              unsubSession();
+              unsubParticipants();
+              unsubSurrenders();
+            };
+
+          } catch (e) {
+            console.error("Firebase 초기화 중 중대한 오류가 발생했습니다:", e);
+            setIsOnline(false);
+          }
+        } else {
+          // 키가 없을 경우 자동으로 단독 오프라인 데모 모드로 동작
+          setIsOnline(false);
+          showToast("📶 비연동 오프라인 모드입니다. 사회자 제어판에서 [모의 인원 주입]을 클릭하여 작동 상태를 검증하세요.");
+        }
+      }, []);
 
       const playThrottledSound = (type) => {
         const now = Date.now();
@@ -225,17 +353,12 @@
         }
       };
 
-      const [toastMessage, setToastMessage] = useState('');
-      const showToast = (msg) => {
-        setToastMessage(msg);
-        setTimeout(() => setToastMessage(''), 3000);
-      };
-
+      // --- 실시간 고성능 물리 효과 트리거 ---
       const triggerPhysicalLaunch = (item) => {
         const flingId = `fling_${Date.now()}_${Math.random()}`;
         const targetSideLeft = Math.random() > 0.5;
         
-        const finalX = targetSideLeft ? (15 + Math.random() * 25) : (60 + Math.random() * 25);
+        const finalX = targetSideLeft ? (12 + Math.random() * 26) : (62 + Math.random() * 26);
         const apexX = targetSideLeft ? (50 - (50 - finalX) / 2) : (50 + (finalX - 50) / 2);
         const apexY = 10 + Math.random() * 12;
 
@@ -256,6 +379,18 @@
           rotMid: `${rotMid}deg`,
           rotEnd: `${rotEnd}deg`
         };
+
+        // 대강당 전광판 탑에 고백 소환
+        setActiveNotice({
+          categoryIcon: newCard.categoryIcon,
+          categoryTitle: newCard.categoryTitle,
+          text: newCard.text,
+          nickname: newCard.nickname
+        });
+
+        setTimeout(() => {
+          setActiveNotice(null);
+        }, 4000);
 
         setFlingingCards(prev => [...prev.slice(-15), newCard]);
 
@@ -295,13 +430,22 @@
         }, 1500);
       };
 
+      // --- 사회자 단계 해제 명령 송신 ---
       const updateGlobalStage = (nextVal) => {
         if (nextVal < 1 || nextVal > 7) return;
         playThrottledSound('chime');
         setGlobalStage(nextVal);
-        showToast(`단계를 ${nextVal}단계로 변경했습니다.`);
+
+        if (isOnline && dbRef.current) {
+          dbRef.current.collection('artifacts').doc(appId).collection('public').doc('session')
+            .update({ currentStage: nextVal })
+            .catch(err => console.error("단계 전송 에러:", err));
+        } else {
+          showToast(`단계를 ${nextVal}단계로 로컬 변경했습니다.`);
+        }
       };
 
+      // --- 참가자 고백 기입 및 버리기 전송 ---
       const handleThrowConfession = () => {
         if (!selectedCategory) return;
         if (!confessionText.trim()) return;
@@ -335,53 +479,89 @@
             playThrottledSound('chime');
           }
 
-          // 로컬 데이터 동기화
-          setParticipants(prev => 
-            prev.map(p => p.id === 'local_me' ? { ...p, currentStage: nextStage, items: updatedHistory } : p)
-          );
-          triggerPhysicalLaunch({
-            text: textToThrow,
-            category: selectedCategory,
-            stage: stageNum,
-            nickname: nickname
-          });
-          
-          // 실시간 고백목록 히스토리에 기입
-          setSurrenders(prev => [
-            {
-              id: `local_${Date.now()}`,
+          if (isOnline && dbRef.current) {
+            // 온라인 Firestore 전송 가동
+            const currentUser = firebase.auth().currentUser;
+            if (currentUser) {
+              // A. 개인 명단 전송
+              dbRef.current.collection('artifacts').doc(appId).collection('participants').doc(currentUser.uid)
+                .set({
+                  nickname: nickname,
+                  currentStage: nextStage,
+                  items: updatedHistory,
+                  lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+              // B. 전체 공용 고백 전광판 전송
+              dbRef.current.collection('artifacts').doc(appId).collection('surrenders')
+                .add({
+                  text: textToThrow,
+                  category: selectedCategory,
+                  stage: stageNum,
+                  nickname: nickname,
+                  timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+          } else {
+            // 로컬용 기재 처리
+            setParticipants(prev => 
+              prev.map(p => p.id === 'local_me' ? { ...p, currentStage: nextStage, items: updatedHistory } : p)
+            );
+            triggerPhysicalLaunch({
               text: textToThrow,
               category: selectedCategory,
               stage: stageNum,
               nickname: nickname
-            },
-            ...prev
-          ]);
+            });
+            setSurrenders(prev => [
+              { id: `local_${Date.now()}`, text: textToThrow, category: selectedCategory, stage: stageNum, nickname: nickname },
+              ...prev
+            ]);
+          }
         }, 1500);
       };
 
+      // --- 참가자 가입 폼 ---
       const handleJoinRetreat = (e) => {
         e.preventDefault();
         if (!nickname.trim()) return;
+
         setHasRegistered(true);
         setMyCurrentStage(1);
-        setParticipants(prev => [...prev, { id: 'local_me', nickname, currentStage: 1, items: [] }]);
-        showToast(`${nickname}님 환영합니다.`);
+
+        if (isOnline && dbRef.current) {
+          const currentUser = firebase.auth().currentUser;
+          if (currentUser) {
+            dbRef.current.collection('artifacts').doc(appId).collection('participants').doc(currentUser.uid)
+              .set({
+                nickname: nickname.trim(),
+                currentStage: 1,
+                items: [],
+                lastActive: firebase.firestore.FieldValue.serverTimestamp()
+              }, { merge: true });
+          }
+        } else {
+          setParticipants(prev => [...prev, { id: 'local_me', nickname: nickname.trim(), currentStage: 1, items: [] }]);
+          showToast(`${nickname}님 환영합니다.`);
+        }
       };
 
+      // --- 통계 가공 ---
       const stats = useMemo(() => {
         const activePeople = participants.filter(p => p.nickname);
         if (activePeople.length === 0) return { avgStage: 0, totalPeople: 0, totalSurrenders: 0, stageReadyCount: 0 };
         
         const readyForNext = activePeople.filter(p => p.currentStage > globalStage).length;
-        const sumStages = activePeople.reduce((acc, curr) => acc + (curr.currentStage - 1), 0);
-        const avg = sumStages / activePeople.length;
-        const totalItems = activePeople.reduce((acc, curr) => acc + (curr.items?.length || 0), 0);
+        const totalCompletedSurrenders = activePeople.reduce((acc, curr) => acc + (curr.currentStage - 1), 0);
+        const maxPossibleSurrenders = activePeople.length * 7;
+        
+        const continuousRatio = maxPossibleSurrenders > 0 ? (totalCompletedSurrenders / maxPossibleSurrenders) : 0;
+        const continuousStage = continuousRatio * 7; 
 
         return {
-          avgStage: avg,
+          avgStage: continuousStage, 
           totalPeople: activePeople.length,
-          totalSurrenders: totalItems,
+          totalSurrenders: totalCompletedSurrenders,
           stageReadyCount: readyForNext
         };
       }, [participants, globalStage]);
@@ -395,15 +575,28 @@
         return stats.avgStage;
       }, [hostMode, manualStage, selectedParticipantId, participants, stats.avgStage]);
 
+      // --- 마스터 포맷 리셋 ---
       const resetAllSessions = () => {
-        if (window.confirm("초기화하시겠습니까?")) {
+        if (window.confirm("수련회 전체 연동 정보와 참가 성찰을 리셋하겠습니까? 데이터가 유실됩니다.")) {
+          if (isOnline && dbRef.current) {
+            // Firestore 데이터베이스 데이터 클리어 일괄 전송
+            dbRef.current.collection('artifacts').doc(appId).collection('public').doc('session').set({ currentStage: 1 });
+            
+            participants.forEach(p => {
+              dbRef.current.collection('artifacts').doc(appId).collection('participants').doc(p.id).delete();
+            });
+            surrenders.forEach(s => {
+              dbRef.current.collection('artifacts').doc(appId).collection('surrenders').doc(s.id).delete();
+            });
+          }
+          
           setParticipants([]);
           setSurrenders([]);
           setGlobalStage(1);
           setFlingingCards([]);
           setSplashes([]);
           setFloatingWords([]);
-          showToast("초기화 완료.");
+          showToast("연동 초기화 완료.");
         }
       };
 
@@ -444,7 +637,7 @@
           });
         }
         setSurrenders(mockSurrenderCollection);
-        showToast("테스트 가상인원 주입 완료.");
+        showToast("모의 인원 주입 완료.");
       };
 
       const handleForceTestFloat = () => {
@@ -465,16 +658,23 @@
       };
 
       const renderTitanicVisual = (isMini = false) => {
+        // 배의 수면 아래 절반 가량 잠김 및 완치 부상 높이 세부 튜닝
+        const translateY = isMini ? 10 : (90 - (currentVisualStage * 14.3));
+        const rotateDeg = isMini ? 2 : (14 - (currentVisualStage * 2.0));
+
         return (
           <div className={`flex-1 flex flex-col items-center justify-center relative select-none w-full ${isMini ? 'h-36 scale-50 origin-center' : 'h-full'}`}>
-            {currentVisualStage >= 6.8 && (
-              <div className="absolute top-1/4 w-[85%] h-[160px] bg-gradient-to-t from-transparent via-cyan-500/10 to-yellow-400/15 blur-3xl animate-pulse z-0 rounded-full" />
+            
+            {currentVisualStage >= 5.5 && !isMini && (
+              <div className="absolute top-1/6 w-[90%] h-[200px] bg-gradient-to-t from-transparent via-cyan-400/10 to-yellow-400/15 blur-3xl animate-pulse z-0 rounded-full" />
             )}
+
             <div 
-              className="w-full max-w-[530px] transition-all duration-1000 ease-out z-10 relative flex flex-col items-center"
+              className="w-full transition-all duration-1000 ease-out z-10 relative flex flex-col items-center"
               style={{
-                transform: `translate3d(0, ${110 - (currentVisualStage * 15.7)}px, 0) rotate(${12 - (currentVisualStage * 1.71)}deg)`,
-                filter: `drop-shadow(0 0 ${currentVisualStage * 4.5}px rgba(34, 211, 238, ${currentVisualStage / 7}))`
+                maxWidth: isMini ? '380px' : '850px',
+                transform: `translate3d(0, ${translateY}px, 0) rotate(${rotateDeg}deg)`,
+                filter: `drop-shadow(0 0 ${isMini ? 2 : (currentVisualStage * 5.5)}px rgba(34, 211, 238, ${currentVisualStage / 7}))`
               }}
             >
               <svg viewBox="0 0 600 250" className="w-full h-auto overflow-visible select-none pointer-events-none">
@@ -486,6 +686,7 @@
                     <circle cx="325" cy="35" r="4" fill="white" className="opacity-20 animate-pulse" />
                   </g>
                 )}
+
                 <g fill="#1a202c" stroke="#111" strokeWidth="2">
                   <path d="M150 95 L165 55 L180 55 L165 95 Z" />
                   <path d="M165 55 L169 45 L176 45 L180 55 Z" fill="#22d3ee" />
@@ -496,16 +697,20 @@
                   <path d="M315 80 L330 40 L345 40 L330 80 Z" />
                   <path d="M330 40 L334 30 L341 30 L345 40 Z" fill="#22d3ee" />
                 </g>
+
                 <path d="M120 120 L400 110 L400 85 L350 85 L350 95 L180 95 L180 105 L120 105 Z" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1" />
-                {currentVisualStage >= 5.8 && (
+                
+                {currentVisualStage >= 5.5 && (
                   <g transform="translate(420, 45)" className="animate-bounce">
                     <line x1="0" y1="0" x2="0" y2="45" stroke="#facc15" strokeWidth="4.5" />
                     <line x1="-12" y1="12" x2="12" y2="12" stroke="#facc15" strokeWidth="4.5" />
                     <circle cx="0" cy="12" r="3.5" fill="#ffffff" />
                   </g>
                 )}
+
                 <path d="M40 120 L460 110 C510 110, 540 135, 560 160 L500 195 L120 195 C70 195, 50 160, 40 120 Z" fill="#0f172a" stroke="#020617" strokeWidth="2" />
                 <path d="M40 120 L460 110 L470 125 L40 135 Z" fill="#0891b2" /> 
+
                 <g fill={currentVisualStage > 3.5 ? "#facc15" : "#475569"}>
                   <circle cx="100" cy="155" r="3" />
                   <circle cx="140" cy="155" r="3" />
@@ -519,21 +724,22 @@
                 </g>
               </svg>
             </div>
-            <div className="absolute bottom-0 left-0 right-0 h-[170px] pointer-events-none z-20">
+
+            <div className="absolute bottom-0 left-0 right-0 h-[180px] pointer-events-none z-20">
               <svg className="absolute bottom-0 w-[200%] h-full opacity-50 animate-[wave_10s_infinite_linear]" viewBox="0 0 1200 120" preserveAspectRatio="none">
                 <path d="M0,60 C150,90 350,30 500,60 C650,90 850,30 1000,60 C1150,90 1350,30 1500,60 L1500,120 L0,120 Z" fill="#0369a1" />
               </svg>
-              <svg className="absolute bottom-0 w-[200%] h-full opacity-80 animate-[wave_6s_infinite_linear]" viewBox="0 0 1200 120" preserveAspectRatio="none">
+              <svg className="absolute bottom-0 w-[200%] h-full opacity-85 animate-[wave_6s_infinite_linear]" viewBox="0 0 1200 120" preserveAspectRatio="none">
                 <path d="M0,80 C200,40 400,110 600,80 C800,50 1000,110 1200,80 L1200,120 L0,120 Z" fill="#0f3c6b" />
               </svg>
             </div>
+
           </div>
         );
       };
 
       return (
-        <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans relative overflow-hidden select-none">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1d] via-[#09101f] to-[#040812] pointer-events-none z-0" />
+        <div className="w-full min-h-screen flex flex-col font-sans relative overflow-x-hidden overflow-y-auto select-none">
           
           {role !== 'screen' && (
             <header className="relative z-10 border-b border-white/10 bg-black/50 backdrop-blur-md px-6 py-4 flex items-center justify-between shrink-0">
@@ -541,7 +747,7 @@
                 <span className="text-2xl animate-pulse">⚓</span>
                 <div>
                   <h1 className="text-md sm:text-lg font-black tracking-tight text-white flex items-center gap-1.5">
-                    생명의 항해 <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold">RELEASE THE WEIGHTS</span>
+                    마음의 타이타닉 <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold">RELEASE THE WEIGHTS</span>
                   </h1>
                 </div>
               </div>
@@ -553,74 +759,112 @@
             </header>
           )}
 
-          <main className="flex-1 relative z-10 flex flex-col overflow-auto">
+          <main className="flex-1 relative z-10 flex flex-col">
             {role === 'select' ? (
+              /* =====================================================================================
+                 [1. 첫 대화: 역할 선택]
+                 ===================================================================================== */
               <div className="flex-1 max-w-5xl w-full mx-auto px-6 py-12 flex flex-col justify-center items-center">
                 <div className="text-center mb-10 max-w-xl space-y-4">
                   <span className="text-5xl animate-bounce inline-block">🚢</span>
-                  <h2 className="text-3xl font-black">생명의 항해 (타이타닉을 구하라)</h2>
-                  <p className="text-xs text-slate-400">교회 수련회용 전면 스크린 연동 시스템</p>
+                  <h2 className="text-3.5xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-100 via-cyan-100 to-indigo-200">마음의 타이타닉</h2>
+                  <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-medium">
+                    그토록 집착하고 생명줄이라 신뢰했던 세상의 7가지 무거운 짐들.<br />
+                    인도자님의 전면 템포에 맞춰 참회하며 가라앉히십시오. <br />
+                    모두가 가벼워질 때 비로소 우리 모두의 구원선이 찬란히 날아오릅니다.
+                  </p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+                
+                {/* 3열 레이아웃 - 모바일 스크롤 가능하도록 overflow 방지 */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl pb-10">
+                  
+                  {/* 대강당 스크린 전용 뷰 */}
                   <div onClick={() => { setRole('screen'); playSound('chime'); }} className="cursor-pointer rounded-2xl bg-gradient-to-br from-slate-900 via-cyan-950/40 to-slate-900 border border-cyan-500/30 p-8 hover:border-cyan-400 hover:shadow-2xl transition-all flex flex-col justify-between">
                     <div>
                       <h3 className="text-lg font-black text-white mb-2">🖥️ 대강당 스크린 전용 뷰</h3>
-                      <p className="text-xs text-slate-400">조잡한 버튼이 없는 깔끔한 대형 화면용 페이지입니다.</p>
+                      <p className="text-xs text-slate-400">조잡한 제어 버튼이 일절 드러나지 않는 전면 프로젝터 송출 전용 뷰입니다.</p>
                     </div>
-                    <span className="text-xs font-bold text-cyan-300 mt-6">화면 띄우기 →</span>
+                    <span className="text-xs font-bold text-cyan-300 mt-6">대형 화면 전송하기 →</span>
                   </div>
+
+                  {/* 사회자용 제어 판넬 */}
                   <div onClick={() => { setRole('host'); playSound('chime'); }} className="cursor-pointer rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/20 p-8 hover:border-indigo-400 hover:shadow-2xl transition-all flex flex-col justify-between">
                     <div>
                       <h3 className="text-lg font-bold text-white mb-2">🎤 사회자 제어 판넬</h3>
                       <p className="text-xs text-slate-400">전체 단계를 개방하고 회개 흐름을 통제하는 사회자용 대시보드입니다.</p>
                     </div>
-                    <span className="text-xs font-bold text-indigo-300 mt-6">판넬 열기 →</span>
+                    <span className="text-xs font-bold text-indigo-300 mt-6">인도 제어판 열기 →</span>
                   </div>
+
+                  {/* 참가자 모바일 */}
                   <div onClick={() => { setRole('participant'); playSound('chime'); }} className="cursor-pointer rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 p-8 hover:border-white/20 transition-all flex flex-col justify-between">
                     <div>
                       <h3 className="text-lg font-bold text-white mb-2">📱 참가자용 모바일 웹</h3>
-                      <p className="text-xs text-slate-400">스마트폰으로 본인의 우상을 기록하고 바다에 가라앉힙니다.</p>
+                      <p className="text-xs text-slate-400">성도들의 스마트폰용 웹으로, 13가지 성찰을 보며 바다에 가라앉힙니다.</p>
                     </div>
-                    <span className="text-xs font-bold text-slate-300 mt-6">탑승하기 →</span>
+                    <span className="text-xs font-bold text-slate-300 mt-6">성도용 웹 탑승하기 →</span>
                   </div>
+
                 </div>
               </div>
             ) : role === 'screen' ? (
+              /* =====================================================================================
+                 [2. 대강당 스크린 뷰]
+                 ===================================================================================== */
               <div className="flex-1 relative flex flex-col justify-between p-6 min-h-screen">
+                
                 <div className="w-full text-center py-4 z-20">
                   <span className="text-[11px] font-black text-cyan-400 tracking-widest block mb-1">실시간 수련회 참회 고백 중계선</span>
-                  <h2 className="text-2xl font-black">생명의 항해 - {globalStage}단계 진행 중</h2>
+                  <h2 className="text-2xl font-black">마음의 타이타닉 - {globalStage}단계 진행 중</h2>
                 </div>
 
+                {/* 새 참회 팝업 배너 */}
+                {activeNotice && (
+                  <div className="absolute top-[13%] left-1/2 -translate-x-1/2 z-50 bg-slate-950/95 border-2 border-amber-400 px-8 py-5 rounded-2xl shadow-[0_0_50px_rgba(251,191,36,0.6)] max-w-2xl w-[90%] text-center backdrop-blur-md animate-[bounce_0.5s_ease-out_forwards]">
+                    <span className="text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/30 px-3 py-1 rounded-full font-black uppercase tracking-wider inline-block mb-2 animate-pulse">
+                      {activeNotice.categoryIcon} {activeNotice.categoryTitle} 참회 투하 완료
+                    </span>
+                    <h3 className="text-lg sm:text-xl font-black text-white leading-relaxed">
+                      "{activeNotice.text}"
+                    </h3>
+                    <p className="text-xs text-slate-400 mt-2 font-bold">
+                      - {activeNotice.nickname} 성도
+                    </p>
+                  </div>
+                )}
+
+                {/* 비행 카드 */}
                 <div className="absolute inset-0 z-30 pointer-events-none overflow-hidden">
                   {flingingCards.map(card => (
-                    <div key={card.id} className="absolute bg-white text-slate-900 border-2 border-amber-400 p-2.5 rounded-lg shadow-2xl text-left"
+                    <div key={card.id} className="absolute bg-white text-slate-900 border-2 border-amber-400 p-3.5 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] text-left font-sans select-none z-30"
                       style={{
-                        width: '130px', height: '90px', fontSize: '9px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+                        width: '200px', height: '125px', fontSize: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
                         animation: 'fling-arc-custom 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards',
                         ['--target-x']: card.targetX, ['--apex-x']: card.apexX, ['--apex-y']: card.apexY, ['--rot-mid']: card.rotMid, ['--rot-end']: card.rotEnd
                       }}
                     >
-                      <div className="text-[8px] font-black text-cyan-600 border-b pb-1 truncate">{card.categoryIcon} {card.categoryTitle}</div>
-                      <div className="flex-1 my-1 overflow-hidden line-clamp-2 font-bold text-slate-800">"{card.text}"</div>
-                      <div className="text-right text-[7px] text-slate-500 font-bold border-t pt-0.5">{card.nickname}</div>
+                      <div className="text-[9px] font-black text-cyan-600 border-b pb-1 truncate">{card.categoryIcon} {card.categoryTitle}</div>
+                      <div className="flex-1 my-1 overflow-hidden line-clamp-2 font-bold text-slate-800 leading-normal">"{card.text}"</div>
+                      <div className="text-right text-[8px] text-slate-500 font-bold border-t pt-0.5">{card.nickname} 성도</div>
                     </div>
                   ))}
                 </div>
 
+                {/* 물보라 */}
                 <div className="absolute inset-0 z-25 pointer-events-none overflow-hidden">
                   {splashes.map(splash => (
                     <div key={splash.id} className="absolute z-25" style={{ left: splash.x, top: '70%', transform: 'translate(-50%, -50%)' }}>
-                      <div className="w-20 h-20 rounded-full border-2 border-cyan-400 opacity-0 animate-[splash-ripple_0.9s_ease-out_forwards]" />
+                      <div className="w-24 h-24 rounded-full border-2 border-cyan-400 opacity-0 animate-[splash-ripple_0.9s_ease-out_forwards]" />
                       <div className="absolute top-0 left-1/2 -translate-x-1/2 flex gap-1.5">
-                        <span className="w-1 h-3 bg-cyan-300 rounded-full animate-[droplet-1_0.6s_ease-out_forwards]" />
-                        <span className="w-1.5 h-2.5 bg-sky-200 rounded-full animate-[droplet-2_0.6s_ease-out_forwards]" />
-                        <span className="w-1 h-3.5 bg-white rounded-full animate-[droplet-3_0.6s_ease-out_forwards]" />
+                        <span className="w-1.5 h-4 bg-cyan-300 rounded-full animate-[droplet-1_0.6s_ease-out_forwards]" />
+                        <span className="w-2 h-3.5 bg-sky-200 rounded-full animate-[droplet-2_0.6s_ease-out_forwards]" />
+                        <span className="w-1.5 h-4 bg-white rounded-full animate-[droplet-3_0.6s_ease-out_forwards]" />
                       </div>
                     </div>
                   ))}
                 </div>
 
+                {/* 기포 */}
                 <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
                   {floatingWords.map(word => (
                     <div key={word.id} className="absolute flex flex-col items-center select-none"
@@ -630,7 +874,7 @@
                         ['--float-x']: word.floatXVal || '0px'
                       }}
                     >
-                      <div className="relative flex items-center gap-1.5 bg-slate-950/90 text-white border-2 border-cyan-400/40 px-4 py-2.5 rounded-full shadow-[0_0_20px_rgba(34,211,238,0.5)]">
+                      <div className="relative flex items-center gap-1.5 bg-slate-950/95 text-white border-2 border-cyan-400/40 px-4 py-2.5 rounded-full shadow-[0_0_20px_rgba(34,211,238,0.5)]">
                         <span className="text-[10px] bg-cyan-950 text-cyan-300 px-1.5 py-0.5 rounded-full font-black">{word.categoryTitle}</span>
                         <span className="font-extrabold text-xs">"{word.text}"</span>
                       </div>
@@ -638,30 +882,43 @@
                   ))}
                 </div>
 
+                {/* 타이타닉 실물 렌더링 */}
                 <div className="flex-1 flex flex-col justify-center items-center w-full my-auto">
                   {renderTitanicVisual(false)}
                 </div>
 
-                <div className="w-full max-w-4xl mx-auto text-center z-25 py-4 bg-slate-900/80 border border-white/10 rounded-2xl backdrop-blur px-6 relative">
+                {/* 안내바 */}
+                <div className="w-full max-w-4xl mx-auto text-center z-25 py-4 bg-slate-900/80 border border-white/10 rounded-2xl backdrop-blur px-6 relative shadow-2xl mb-10">
                   <button onClick={() => setRole('select')} className="absolute top-2 right-3 text-[10px] bg-white/5 px-2 py-0.5 rounded text-slate-500">나가기</button>
-                  <span className="text-[9px] font-black text-cyan-300 block mb-1">참회와 기도의 대항해</span>
+                  
+                  <div className="flex justify-center gap-6 text-[10px] text-cyan-400 font-bold mb-1.5">
+                    <span>👥 탑승 성도: {stats.totalPeople}명</span>
+                    <span>🌊 총 참회 투하량: {stats.totalSurrenders}회</span>
+                    <span>📈 배의 가벼움도: {((currentVisualStage / 7) * 100).toFixed(1)}%</span>
+                  </div>
+
+                  <span className="text-[9px] font-black text-cyan-300 block mb-1 uppercase tracking-wider">참회와 기도의 대항해</span>
                   <p className="text-xs text-slate-200 font-bold">
-                    {currentVisualStage <= 1.2 ? "우리의 타이타닉이 가라앉아 있습니다. 마음의 무거운 우상들을 버려주세요." : "죄를 버리자 인생의 구원선이 찬란하게 떠오르고 있습니다."}
+                    {currentVisualStage <= 1.2 ? "우리의 마음의 타이타닉이 무거운 죄에 깔려 반쯤 바다에 잠겨 있습니다. 무거운 우상들을 성찰해 주십시오." : "성도들의 참회가 바다를 뒤흔듭니다. 마음의 타이타닉이 가벼워져 조금씩 물 위로 올라오고 있습니다!"}
                   </p>
                 </div>
               </div>
             ) : role === 'host' ? (
+              /* =====================================================================================
+                 [3. 사회자용 제어 판넬]
+                 ===================================================================================== */
               <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
                 <div className="lg:col-span-8 relative flex flex-col bg-slate-950/50 p-4 border-r border-white/5 justify-between">
-                  <div className="absolute top-4 left-4 z-20 bg-slate-900/95 border p-3 rounded-xl max-w-sm">
+                  <div className="absolute top-4 left-4 z-20 bg-slate-900/95 border border-white/10 p-3.5 rounded-xl max-w-sm">
                     <span className="text-[10px] text-indigo-400 font-bold block">🖥️ 스크린 실시간 프리뷰</span>
+                    <span className="text-xs text-slate-300 font-bold">대강당의 잠수 깊이를 동일하게 모니터링합니다.</span>
                   </div>
                   <div className="flex-1 flex flex-col justify-center items-center w-full my-auto">
                     {renderTitanicVisual(true)}
                   </div>
                 </div>
 
-                <div className="lg:col-span-4 flex flex-col bg-slate-900/95 p-4 space-y-4 overflow-y-auto">
+                <div className="lg:col-span-4 flex flex-col bg-slate-900/95 p-4 space-y-4 overflow-y-auto font-medium">
                   <div className="bg-slate-950 border border-indigo-500/30 p-4 rounded-xl space-y-3">
                     <span className="text-[10px] font-bold text-indigo-400 block">🔒 실시간 진도 잠금 해제</span>
                     <div className="grid grid-cols-2 gap-2">
@@ -669,46 +926,55 @@
                       <button onClick={() => updateGlobalStage(globalStage + 1)} disabled={globalStage === 7} className="py-2 bg-indigo-600 rounded-lg text-xs font-black disabled:opacity-30">다음 개방 ({globalStage+1}단계) 🔓</button>
                     </div>
                   </div>
+
                   <div className="bg-white/5 p-3 rounded-xl flex justify-between items-center">
                     <div>
                       <h4 className="text-xs font-bold text-slate-300">수련회 시뮬레이터</h4>
-                      <p className="text-[9px] text-slate-500">모의 데이터 인입</p>
+                      <p className="text-[9px] text-slate-500">가상 성찰 데이터 주입</p>
                     </div>
                     <div className="flex gap-1">
                       <button onClick={injectMockParticipants} className="px-2 py-1 bg-indigo-900 text-indigo-100 rounded text-[10px] font-bold">모의 인원 주입</button>
                       <button onClick={resetAllSessions} className="px-2 py-1 bg-red-950 text-red-300 rounded text-[10px] font-bold">리셋</button>
                     </div>
                   </div>
+
                   <div className="space-y-2">
                     <span className="text-xs font-bold text-slate-400">📝 흘러가는 죄 고백 목록 ({surrenders.length}건)</span>
                     <button onClick={handleForceTestFloat} className="text-[10px] text-cyan-400 hover:underline block font-bold">+ 종이카드 가상 투하 테스트</button>
                     <div className="bg-black/50 border rounded-xl max-h-[140px] overflow-y-auto p-2">
                       {surrenders.map((s, idx) => (
-                        <div key={idx} className="text-[10px] p-1 border-b border-white/5">[{s.category}] "{s.text}" - {s.nickname}</div>
+                        <div key={idx} className="text-[10px] p-1 border-b border-white/5 font-semibold text-slate-300">[{s.category}] "{s.text}" - {s.nickname}</div>
                       ))}
                     </div>
                   </div>
                 </div>
               </div>
             ) : (
+              /* =====================================================================================
+                 [4. 참가자 모바일 화면]
+                 ===================================================================================== */
               <div className="flex-1 max-w-lg w-full mx-auto px-4 py-6 flex flex-col justify-between">
                 {!hasRegistered ? (
-                  <div className="my-auto bg-slate-900/70 border p-6 rounded-2xl space-y-4">
-                    <h3 className="text-lg font-bold text-white">생명의 구원선 탑승</h3>
+                  <div className="my-auto bg-slate-900/70 border p-6 rounded-2xl space-y-4 shadow-2xl">
+                    <h3 className="text-lg font-bold text-white text-center">마음의 타이타닉 탑승</h3>
+                    <p className="text-xs text-slate-400 leading-relaxed text-center">
+                      본인의 수련회 조와 이름을 정확히 적고 예식에 참여하십시오. <br />
+                      고백을 적고 던질 때마다 대강당 화면의 배가 실시간으로 수면 위로 날아오릅니다.
+                    </p>
                     <form onSubmit={handleJoinRetreat} className="space-y-4">
-                      <input type="text" placeholder="예: 3조 김요한" value={nickname} onChange={e=>setNickname(e.target.value)} required className="w-full bg-slate-950 border rounded-xl px-4 py-3 text-xs" />
+                      <input type="text" placeholder="예: 3조 김성찰" value={nickname} onChange={e=>setNickname(e.target.value)} required className="w-full bg-slate-950 border rounded-xl px-4 py-3 text-xs" />
                       <button type="submit" className="w-full py-3 bg-cyan-600 text-white font-bold text-xs rounded-xl">예식 참여하기</button>
                     </form>
                   </div>
                 ) : myCurrentStage <= 7 ? (
                   myCurrentStage > globalStage ? (
-                    <div className="my-auto bg-slate-900/60 border p-8 rounded-2xl text-center space-y-4">
+                    <div className="my-auto bg-slate-900/60 border p-8 rounded-2xl text-center space-y-4 shadow-2xl">
                       <div className="text-2xl animate-pulse">⏳</div>
                       <h3 className="text-sm font-bold text-cyan-300">{myCurrentStage-1}단계 완료!</h3>
-                      <p className="text-xs text-slate-300">사회자님이 다음 단계를 열어주실 때까지 침묵하며 묵상합시다.</p>
+                      <p className="text-xs text-slate-300 font-bold">사회자님이 다음 단계를 열어주실 때까지 침묵하며 묵상합시다.</p>
                     </div>
                   ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-4 pb-10">
                       <span className="text-xs font-bold text-cyan-300 block">{myCurrentStage}단계 우상 선택</span>
                       <div className="grid grid-cols-3 gap-1.5 max-h-[150px] overflow-y-auto p-1 bg-slate-900/40 rounded-xl">
                         {SURRENDER_CATEGORIES.map(c => (
@@ -719,7 +985,7 @@
                       </div>
                       {selectedCategory && (
                         <div className="space-y-2">
-                          <p className="text-[10px] text-slate-400 italic bg-black/40 p-2.5 rounded">{SURRENDER_CATEGORIES.find(c=>c.id===selectedCategory)?.examples}</p>
+                          <p className="text-[10px] text-slate-400 italic bg-black/40 p-2.5 rounded font-medium">{SURRENDER_CATEGORIES.find(c=>c.id===selectedCategory)?.examples}</p>
                           <textarea rows="2" placeholder="주님 앞에 내려놓을 사연을 적으세요..." value={confessionText} onChange={e=>setConfessionText(e.target.value)} className="w-full bg-slate-950 border rounded-xl p-3 text-xs" />
                           <button onClick={handleThrowConfession} className="w-full py-3 bg-cyan-600 text-white rounded-xl text-xs font-bold">🌊 바다 깊숙이 던져버리기</button>
                         </div>
@@ -727,10 +993,10 @@
                     </div>
                   )
                 ) : (
-                  <div className="my-auto bg-slate-900/70 border border-emerald-500/30 p-8 rounded-2xl text-center space-y-4">
+                  <div className="my-auto bg-slate-900/70 border border-emerald-500/30 p-8 rounded-2xl text-center space-y-4 shadow-2xl mb-10">
                     <span className="text-3xl">✨</span>
                     <h3 className="text-base font-bold text-emerald-400">7단계 해방 예식 완료!</h3>
-                    <p className="text-xs text-slate-300">이제 조원들과 함께 전면 대형 스크린을 바라보며 마음 모아 기도합시다.</p>
+                    <p className="text-xs text-slate-300 font-bold">모든 짐을 훌륭히 주님 앞에 버렸습니다! <br />이제 조원들과 함께 전면 대형 스크린을 바라보며 마음 모아 기도합시다.</p>
                   </div>
                 )}
               </div>
