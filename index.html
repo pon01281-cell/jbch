@@ -9,14 +9,14 @@
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- React & ReactDOM (안정 버전) -->
+  <!-- React & ReactDOM -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   
   <!-- Babel (브라우저 실시간 JSX 컴파일러) -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
-  <!-- 🌟 Google Firebase 라이브러리 (가장 에러율이 낮은 Compat 버전 적용) -->
+  <!-- 🌟 호환성 100% 구글 Firebase 라이브러리 (Compat 버전) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -25,21 +25,20 @@
   
   <div id="root"></div>
 
+  <!-- React Application Code -->
   <script type="text/babel">
     const { useState, useEffect, useRef, useMemo } = React;
 
-    // --- ⚠️ 중요: 구글 Firebase에서 발급받은 Config 값을 여기에 붙여넣으세요! ---
-    // 아래 정보를 채워 넣으면 자동으로 전 세계 실시간 온라인 연동망이 가동됩니다.
-    // 만약 빈칸으로 두시면 오작동 없이 '오프라인 단독 시뮬레이션 모드'로 가동됩니다.
+    // --- 🌟 제공해주신 Firebase Config 완벽 이식 ---
     const firebaseConfig = {
-  apiKey: "AIzaSyD9m0omYwWSsdpWyAIjHqHE_6ZHxnDQ8F4",
-  authDomain: "church-71d03.firebaseapp.com",
-  projectId: "church-71d03",
-  storageBucket: "church-71d03.firebasestorage.app",
-  messagingSenderId: "700068495005",
-  appId: "1:700068495005:web:43a7cc6cc6721510ac1e74",
-  measurementId: "G-4LY0TV8LQN"
-};
+      apiKey: "AIzaSyD9m0omYwWSsdpWyAIjHqHE_6ZHxnDQ8F4",
+      authDomain: "church-71d03.firebaseapp.com",
+      projectId: "church-71d03",
+      storageBucket: "church-71d03.firebasestorage.app",
+      messagingSenderId: "700068495005",
+      appId: "1:700068495005:web:43a7cc6cc6721510ac1e74",
+      measurementId: "G-4LY0TV8LQN"
+    };
 
     // --- Web Audio API 효과음 엔진 ---
     const playSound = (type) => {
@@ -98,23 +97,23 @@
 
     // --- 13가지 성찰 카테고리 정의 ---
     const SURRENDER_CATEGORIES = [
-      { id: 'word', title: '말씀', icon: '📖', examples: '읽기, 듣기, 암송, 묵상, 순종, 실천함으로 내 말씀으로 만들기, 말씀으로 단련 받기 등' },
-      { id: 'prayer', title: '기도', icon: '🙏', examples: '매일 하는 기도, 회개 기도, 영혼을 위한 기도, 순종하기 위한 기도, 감사 기도 등' },
-      { id: 'church', title: '교회', icon: '⛪', examples: '육신을 이기고 교제 참석, 우선순위가 교회가 먼저, 교회를 위한 희생, 서로 돌아봄 등' },
-      { id: 'evangelism', title: '전도', icon: '📣', examples: '영혼을 사랑하는 마음 갖기, 주변 사람에게 관심 갖기, 전도를 위한 물질 사용 등' },
+      { id: 'word', title: '말씀', icon: '📖', examples: '읽기, 듣기, 암송, 묵상, 순종, 실천함으로 내 말씀으로 만들기 등' },
+      { id: 'prayer', title: '기도', icon: '🙏', examples: '매일 하는 기도, 회개 기도, 영혼을 위한 기도, 순종하기 위한 기도 등' },
+      { id: 'church', title: '교회', icon: '⛪', examples: '육신을 이기고 교제 참석, 우선순위가 교회가 먼저, 서로 돌아봄 등' },
+      { id: 'evangelism', title: '전도', icon: '📣', examples: '영혼을 사랑하는 마음 갖기, 주변 사람에게 관심 갖기 등' },
       { id: 'reward', title: '상급', icon: '👑', examples: '세상의 좋은 것보다 하늘의 상급 사모함, 그리스도인의 심판대 기억하기 등' },
-      { id: 'career', title: '직장/학업', icon: '💼', examples: '사회적 명예와 위치, 인정받고 싶은 열망, 학점, 꿈과 진로, 성공, 재능 성취 등' },
-      { id: 'money', title: '돈', icon: '💵', examples: '안정적인 삶, 결혼자금, 적금, 탐심, 부모님 용돈, 내가 사고 싶은 물질적 욕구 등' },
-      { id: 'flesh', title: '육신', icon: '🏋️', examples: '외모 관리, 운동, 건강 염려증, 귀찮음과 나태함, 게으름, 육신적 쾌락 즐기기 등' },
-      { id: 'nature', title: '본성', icon: '👤', examples: '내 성격과 생각, 고집, 아집, 자존심, 이기심, 교만함, 시기와 질투, 험담, 사나움 등' },
-      { id: 'hobby', title: '취미', icon: '🎮', examples: '넷플릭스/유튜브 보기, 밤샘 웹툰, 인스타 피드 구경, 맛집 탐방, 게임 중독 등' },
-      { id: 'family', title: '가족', icon: '🏡', examples: '아빠, 엄마, 남편, 부인, 미래의 배우자에 대한 집착, 가족만의 시간 보장 등' },
+      { id: 'career', title: '직장/학업', icon: '💼', examples: '사회적 명예와 위치, 인정받고 싶은 열망, 학점, 꿈과 진로 등' },
+      { id: 'money', title: '돈', icon: '💵', examples: '안정적인 삶, 결혼자금, 적금, 탐심, 내가 사고 싶은 물질적 욕구 등' },
+      { id: 'flesh', title: '육신', icon: '🏋️', examples: '외모 관리, 운동, 건강 염려증, 나태함, 게으름, 육신적 쾌락 즐기기 등' },
+      { id: 'nature', title: '본성', icon: '👤', examples: '내 고집, 아집, 자존심, 이기심, 교만함, 시기와 질투, 험담, 사나움 등' },
+      { id: 'hobby', title: '취미', icon: '🎮', examples: '넷플릭스/유튜브 시청, 인스타 구경, 맛집 탐방, 게임 중독 등' },
+      { id: 'family', title: '가족', icon: '🏡', examples: '가족, 배우자에 대한 집착, 가족만의 시간 보장 등' },
       { id: 'friend', title: '친구', icon: '🤝', examples: '인정받고 싶은 조바심, 우정에 대한 과도한 집착, 어울려 놀기만 하려는 성향 등' },
       { id: 'comfort', title: '편안함', icon: '🛌', examples: '잠, 끝없는 휴식, 멍 때리기, 침대 밖으로 안 나가기, 누워 있기만 함 등' }
     ];
 
     function App() {
-      const appId = 'titanic-retreat-final';
+      const appId = 'titanic-church-app';
       const [user, setUser] = useState(null);
       const [isOnline, setIsOnline] = useState(false);
       const [loading, setLoading] = useState(true);
@@ -141,7 +140,6 @@
       const [floatingWords, setFloatingWords] = useState([]);
       const [activeNotice, setActiveNotice] = useState(null);
 
-      // 브라우저 기본 경고창 대체를 위한 자체 커스텀 모달 상태
       const [customConfirm, setCustomConfirm] = useState({ isOpen: false, message: "", onConfirm: null });
 
       const isInitialLoadRef = useRef(true);
@@ -155,49 +153,53 @@
         setTimeout(() => setToastMessage(''), 3000);
       };
 
-      // --- 🌟 Firebase 엔진 초기화 ---
+      // --- 🌟 Firebase 실시간 엔진 초기화 (강력한 예외처리 추가) ---
       useEffect(() => {
-        if (firebaseConfig && firebaseConfig.apiKey && firebaseConfig.apiKey !== "") {
-          try {
-            if (!firebase.apps.length) {
-              firebase.initializeApp(firebaseConfig);
-            }
-            const auth = firebase.auth();
-            const db = firebase.firestore();
-            dbRef.current = db;
-            
-            // 익명 로그인 수행
-            auth.signInAnonymously()
-              .then(() => setIsOnline(true))
-              .catch((err) => {
-                console.warn("인증 실패. 로컬 모드로 우회합니다.", err);
-                setIsOnline(false);
-              });
-
-            const unsubscribeAuth = auth.onAuthStateChanged((u) => {
-              setUser(u);
-              setLoading(false);
-              if (u) showToast("🛰️ 클라우드 서버와 성공적으로 연결되었습니다.");
+        try {
+          if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+          }
+          const auth = firebase.auth();
+          const db = firebase.firestore();
+          dbRef.current = db;
+          
+          // 1. 익명 로그인 수행
+          auth.signInAnonymously()
+            .then(() => setIsOnline(true))
+            .catch((err) => {
+              console.error("Firebase 로그인 거부 에러:", err);
+              if(err.code === 'auth/operation-not-allowed') {
+                showToast("❌ [중요] Firebase 콘솔에서 '익명 로그인'을 켜주세요!");
+              } else {
+                showToast("❌ 서버 연결 실패 (로컬 모드 가동 중)");
+              }
+              setIsOnline(false);
             });
 
-            return () => unsubscribeAuth();
-          } catch (e) {
-            console.error("Firebase 초기화 에러:", e);
-            setIsOnline(false);
-            setLoading(false);
-          }
-        } else {
+          // 2. 로그인 상태 구독
+          const unsubscribeAuth = auth.onAuthStateChanged((u) => {
+            if (u) {
+              setUser(u);
+              setLoading(false);
+              showToast("🛰️ 클라우드 서버와 성공적으로 연결되었습니다.");
+            } else {
+              setLoading(false);
+            }
+          });
+
+          return () => unsubscribeAuth();
+        } catch (e) {
+          console.error("Firebase 초기화 에러:", e);
           setIsOnline(false);
           setLoading(false);
-          showToast("📶 오프라인 시뮬레이션 모드입니다.");
         }
       }, []);
 
-      // --- 🌟 실시간 데이터 구독 ---
+      // --- 🌟 실시간 데이터베이스 연동 구독 ---
       useEffect(() => {
         if (!isOnline || !user || !dbRef.current) return;
 
-        // 세션 구독
+        // 세션 데이터
         const sessionRef = dbRef.current.collection('artifacts').doc(appId).collection('public').doc('session');
         const unsubSession = sessionRef.onSnapshot((docSnap) => {
           if (docSnap.exists && docSnap.data().currentStage !== undefined) {
@@ -205,9 +207,12 @@
           } else {
             sessionRef.set({ currentStage: 1 });
           }
+        }, (err) => {
+          console.error("규칙 거부 에러:", err);
+          showToast("❌ [중요] Firestore 규칙을 allow read, write: if true; 로 바꿔주세요!");
         });
 
-        // 참가자 구독
+        // 참가자 명단
         const partsRef = dbRef.current.collection('artifacts').doc(appId).collection('participants');
         const unsubParticipants = partsRef.onSnapshot((snapshot) => {
           const list = [];
@@ -215,7 +220,7 @@
           setParticipants(list);
         });
 
-        // 참회 고백 구독
+        // 참회 고백 
         const surrRef = dbRef.current.collection('artifacts').doc(appId).collection('surrenders');
         const unsubSurrenders = surrRef.onSnapshot((snapshot) => {
           const list = [];
@@ -261,7 +266,7 @@
         }
       };
 
-      // --- 물리 애니메이션 발동기 ---
+      // --- 물리 애니메이션 투하 발동기 ---
       const triggerPhysicalLaunch = (item) => {
         const flingId = `fling_${Date.now()}_${Math.random()}`;
         const targetSideLeft = Math.random() > 0.5;
@@ -269,31 +274,19 @@
         const finalX = targetSideLeft ? (12 + Math.random() * 26) : (62 + Math.random() * 26);
         const apexX = targetSideLeft ? (50 - (50 - finalX) / 2) : (50 + (finalX - 50) / 2);
         const apexY = 10 + Math.random() * 12;
-
         const rotMid = targetSideLeft ? -130 : 130;
         const rotEnd = targetSideLeft ? -360 : 360;
-
         const categoryObj = SURRENDER_CATEGORIES.find(c => c.id === item.category);
 
         const newCard = {
-          id: flingId,
-          text: item.text,
-          categoryTitle: categoryObj?.title || '성찰',
-          categoryIcon: categoryObj?.icon || '⚓',
-          nickname: item.nickname || '익명성도',
-          apexX: `${apexX}%`,
-          apexY: `${apexY}%`,
-          targetX: `${finalX}%`,
-          rotMid: `${rotMid}deg`,
-          rotEnd: `${rotEnd}deg`
+          id: flingId, text: item.text, categoryTitle: categoryObj?.title || '성찰',
+          categoryIcon: categoryObj?.icon || '⚓', nickname: item.nickname || '익명성도',
+          apexX: `${apexX}%`, apexY: `${apexY}%`, targetX: `${finalX}%`, rotMid: `${rotMid}deg`, rotEnd: `${rotEnd}deg`
         };
 
         // 대강당 전광판 소환
         setActiveNotice({
-          categoryIcon: newCard.categoryIcon,
-          categoryTitle: newCard.categoryTitle,
-          text: newCard.text,
-          nickname: newCard.nickname
+          categoryIcon: newCard.categoryIcon, categoryTitle: newCard.categoryTitle, text: newCard.text, nickname: newCard.nickname
         });
 
         setTimeout(() => setActiveNotice(null), 4000);
@@ -313,13 +306,8 @@
             const riseDuration = 9 + Math.random() * 3;
 
             const newBubble = {
-              id: bubbleId,
-              text: item.text,
-              categoryTitle: categoryObj?.title || '성찰',
-              nickname: item.nickname || '익명',
-              x: `${finalX}%`,
-              size: 15 + Math.random() * 6,
-              duration: riseDuration
+              id: bubbleId, text: item.text, categoryTitle: categoryObj?.title || '성찰',
+              nickname: item.nickname || '익명', x: `${finalX}%`, size: 15 + Math.random() * 6, duration: riseDuration
             };
 
             setFloatingWords(prev => [...prev, newBubble]);
@@ -339,11 +327,11 @@
           dbRef.current.collection('artifacts').doc(appId).collection('public').doc('session')
             .update({ currentStage: nextVal }).catch(e => console.log(e));
         } else {
-          showToast(`단계를 ${nextVal}단계로 변경했습니다.`);
+          showToast(`단계를 ${nextVal}단계로 변경했습니다. (로컬모드)`);
         }
       };
 
-      // 참회 투하
+      // 참가자 참회 투하 전송
       const handleThrowConfession = () => {
         if (!selectedCategory || !confessionText.trim()) return;
 
@@ -366,6 +354,7 @@
           if (nextStage === 8) playThrottledSound('triumph');
           else playThrottledSound('chime');
 
+          // 클라우드 서버에 저장 (실시간 동기화)
           if (isOnline && dbRef.current && user) {
             dbRef.current.collection('artifacts').doc(appId).collection('participants').doc(user.uid).set({
               nickname: nickname, currentStage: nextStage, items: updatedHistory, lastActive: firebase.firestore.FieldValue.serverTimestamp()
@@ -394,10 +383,11 @@
           }, { merge: true });
         } else {
           setParticipants(prev => [...prev, { id: 'local_me', nickname: nickname.trim(), currentStage: 1, items: [] }]);
-          showToast(`${nickname}님 환영합니다.`);
+          showToast(`${nickname}님 오프라인으로 입장하셨습니다.`);
         }
       };
 
+      // 통계 계산 로직 (부상 깊이 반영)
       const stats = useMemo(() => {
         const activePeople = participants.filter(p => p.nickname);
         if (activePeople.length === 0) return { avgStage: 0, totalPeople: 0, totalSurrenders: 0, stageReadyCount: 0 };
@@ -421,7 +411,7 @@
         return stats.avgStage;
       }, [hostMode, manualStage, selectedParticipantId, participants, stats.avgStage]);
 
-      // 커스텀 리셋 모달 발동기
+      // 커스텀 리셋 모달
       const triggerResetSessions = () => {
         setCustomConfirm({
           isOpen: true,
@@ -455,13 +445,7 @@
         ];
 
         const mockList = mockNames.map((name, index) => {
-          return {
-            id: `mock_user_${index}`,
-            nickname: name,
-            currentStage: Math.floor(Math.random() * 6) + 1,
-            items: [],
-            lastActive: new Date()
-          };
+          return { id: `mock_user_${index}`, nickname: name, currentStage: Math.floor(Math.random() * 6) + 1, items: [], lastActive: new Date() };
         });
         setParticipants(mockList);
 
@@ -469,12 +453,8 @@
         for (let i = 0; i < 15; i++) {
           const randomObj = mockSurrenders[Math.floor(Math.random() * mockSurrenders.length)];
           mockSurrenderCollection.push({
-            id: `mock_item_${i}`,
-            text: randomObj.text,
-            category: randomObj.category,
-            stage: Math.floor(Math.random() * 5) + 1,
-            nickname: mockNames[i % mockNames.length],
-            timestamp: { seconds: Math.floor(Date.now() / 1000) - i * 15 }
+            id: `mock_item_${i}`, text: randomObj.text, category: randomObj.category, stage: Math.floor(Math.random() * 5) + 1,
+            nickname: mockNames[i % mockNames.length], timestamp: { seconds: Math.floor(Date.now() / 1000) - i * 15 }
           });
         }
         setSurrenders(mockSurrenderCollection);
@@ -492,13 +472,14 @@
         triggerPhysicalLaunch({ text: item.text, category: item.cat, stage: globalStage, nickname: nickname || "시범 성도" });
       };
 
+      // --- 대형 타이타닉 및 거친 파도 렌더링 엔진 ---
       const renderTitanicVisual = (isMini = false) => {
-        // 배의 시작 수면 아래 반 잠김 깊이(90px)와 완전 부상 높이(-10px) 튜닝
         const translateY = isMini ? 10 : (90 - (currentVisualStage * 14.3));
         const rotateDeg = isMini ? 2 : (14 - (currentVisualStage * 2.0));
 
         return (
           <div className={`flex-1 flex flex-col items-center justify-center relative select-none w-full ${isMini ? 'h-36 scale-50 origin-center' : 'h-full'}`}>
+            
             {currentVisualStage >= 5.5 && !isMini && (
               <div className="absolute top-1/6 w-[90%] h-[200px] bg-gradient-to-t from-transparent via-cyan-400/10 to-yellow-400/15 blur-3xl animate-pulse z-0 rounded-full" />
             )}
@@ -519,6 +500,7 @@
                     <circle cx="325" cy="35" r="4" fill="white" className="opacity-20 animate-pulse" />
                   </g>
                 )}
+
                 <g fill="#1a202c" stroke="#111" strokeWidth="2">
                   <path d="M150 95 L165 55 L180 55 L165 95 Z" />
                   <path d="M165 55 L169 45 L176 45 L180 55 Z" fill="#22d3ee" />
@@ -529,6 +511,7 @@
                   <path d="M315 80 L330 40 L345 40 L330 80 Z" />
                   <path d="M330 40 L334 30 L341 30 L345 40 Z" fill="#22d3ee" />
                 </g>
+
                 <path d="M120 120 L400 110 L400 85 L350 85 L350 95 L180 95 L180 105 L120 105 Z" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1" />
                 
                 {currentVisualStage >= 5.5 && (
@@ -538,8 +521,10 @@
                     <circle cx="0" cy="12" r="3.5" fill="#ffffff" />
                   </g>
                 )}
+
                 <path d="M40 120 L460 110 C510 110, 540 135, 560 160 L500 195 L120 195 C70 195, 50 160, 40 120 Z" fill="#0f172a" stroke="#020617" strokeWidth="2" />
                 <path d="M40 120 L460 110 L470 125 L40 135 Z" fill="#0891b2" /> 
+
                 <g fill={currentVisualStage > 3.5 ? "#facc15" : "#475569"}>
                   <circle cx="100" cy="155" r="3" />
                   <circle cx="140" cy="155" r="3" />
@@ -580,7 +565,12 @@
                   </h1>
                 </div>
               </div>
-              <div>
+              <div className="flex items-center gap-2">
+                {isOnline ? (
+                  <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-1 rounded font-bold animate-pulse">🛰️ ONLINE</span>
+                ) : (
+                  <span className="text-[10px] bg-red-500/20 text-red-300 border border-red-500/30 px-2 py-1 rounded font-bold">OFFLINE</span>
+                )}
                 {role !== 'select' && (
                   <button onClick={() => setRole('select')} className="px-2.5 py-1 text-xs bg-white/10 hover:bg-white/20 text-slate-200 rounded-lg font-bold">처음으로</button>
                 )}
@@ -592,7 +582,7 @@
             {loading ? (
               <div className="flex-1 flex flex-col items-center justify-center">
                 <div className="w-10 h-10 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mb-3"></div>
-                <p className="text-xs text-slate-400">네트워크망 동기화 진행 중...</p>
+                <p className="text-xs text-slate-400">데이터를 실시간 동기화 중입니다...</p>
               </div>
             ) : role === 'select' ? (
               /* [1. 역할 선택창] */
@@ -659,8 +649,8 @@
                       }}
                     >
                       <div className="text-[9px] font-black text-cyan-600 border-b pb-1 truncate">{card.categoryIcon} {card.categoryTitle}</div>
-                      <div className="flex-1 my-1 overflow-hidden line-clamp-2 font-bold text-slate-800 leading-normal">"{card.text}"</div>
-                      <div className="text-right text-[8px] text-slate-500 font-bold border-t pt-0.5">{card.nickname} 성도</div>
+                      <div className="flex-1 my-1 overflow-hidden line-clamp-2 font-bold text-slate-800">"{card.text}"</div>
+                      <div className="text-right text-[8px] text-slate-500 font-bold border-t pt-0.5">{card.nickname}</div>
                     </div>
                   ))}
                 </div>
@@ -687,7 +677,7 @@
                         ['--float-x']: word.floatXVal || '0px'
                       }}
                     >
-                      <div className="relative flex items-center gap-1.5 bg-slate-950/95 text-white border-2 border-cyan-400/40 px-4 py-2.5 rounded-full shadow-[0_0_20px_rgba(34,211,238,0.5)]">
+                      <div className="relative flex items-center gap-1.5 bg-slate-950/90 text-white border-2 border-cyan-400/40 px-4 py-2.5 rounded-full shadow-[0_0_20px_rgba(34,211,238,0.5)]">
                         <span className="text-[10px] bg-cyan-950 text-cyan-300 px-1.5 py-0.5 rounded-full font-black">{word.categoryTitle}</span>
                         <span className="font-extrabold text-xs">"{word.text}"</span>
                       </div>
@@ -699,7 +689,7 @@
                   {renderTitanicVisual(false)}
                 </div>
 
-                <div className="w-full max-w-4xl mx-auto text-center z-25 py-4 bg-slate-900/80 border border-white/10 rounded-2xl backdrop-blur px-6 relative shadow-2xl mb-4">
+                <div className="w-full max-w-4xl mx-auto text-center z-25 py-4 bg-slate-900/80 border border-white/10 rounded-2xl backdrop-blur px-6 relative shadow-2xl">
                   <button onClick={() => setRole('select')} className="absolute top-2 right-3 text-[10px] bg-white/5 px-2 py-0.5 rounded text-slate-500">나가기</button>
                   <div className="flex justify-center gap-6 text-[10px] text-cyan-400 font-bold mb-1.5">
                     <span>👥 탑승 성도: {stats.totalPeople}명</span>
@@ -716,16 +706,15 @@
               /* [3. 사회자용 제어 판넬] */
               <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden font-sans min-h-[90vh]">
                 <div className="lg:col-span-8 relative flex flex-col bg-slate-950/50 p-4 border-r border-white/5 justify-between">
-                  <div className="absolute top-4 left-4 z-20 bg-slate-900/95 border border-white/10 p-3.5 rounded-xl max-w-sm">
+                  <div className="absolute top-4 left-4 z-20 bg-slate-900/95 border p-3 rounded-xl max-w-sm">
                     <span className="text-[10px] text-indigo-400 font-bold block">🖥️ 스크린 실시간 프리뷰</span>
-                    <span className="text-xs text-slate-300 font-bold">대강당의 잠수 깊이를 동일하게 모니터링합니다.</span>
                   </div>
                   <div className="flex-1 flex flex-col justify-center items-center w-full my-auto">
                     {renderTitanicVisual(true)}
                   </div>
                 </div>
 
-                <div className="lg:col-span-4 flex flex-col bg-slate-900/95 p-4 space-y-4 overflow-y-auto font-medium">
+                <div className="lg:col-span-4 flex flex-col bg-slate-900/95 p-4 space-y-4 overflow-y-auto">
                   <div className="bg-slate-950 border border-indigo-500/30 p-4 rounded-xl space-y-3">
                     <span className="text-[10px] font-bold text-indigo-400 block">🔒 실시간 진도 잠금 해제</span>
                     <div className="grid grid-cols-2 gap-2">
@@ -733,35 +722,16 @@
                       <button onClick={() => updateGlobalStage(globalStage + 1)} disabled={globalStage === 7} className="py-2 bg-indigo-600 rounded-lg text-xs font-black disabled:opacity-30">다음 개방 ({globalStage+1}단계) 🔓</button>
                     </div>
                   </div>
-
-                  <div className="bg-slate-950 border border-indigo-500/30 p-4 rounded-xl space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-[10px] font-bold text-amber-400 block">🎛️ 수면 고도 강제조정</span>
-                      <button onClick={() => setHostMode(hostMode === 'manual' ? 'collective' : 'manual')} className={`px-2 py-0.5 rounded text-[9px] font-extrabold ${hostMode === 'manual' ? 'bg-amber-600 text-white' : 'bg-white/5 text-slate-400'}`}>
-                        {hostMode === 'manual' ? "수동 모드 켬" : "공동체 연동 중"}
-                      </button>
-                    </div>
-                    {hostMode === 'manual' && (
-                      <div className="space-y-2 pt-1">
-                        <input type="range" min="0" max="7" step="0.05" value={manualStage} onChange={(e) => setManualStage(parseFloat(e.target.value))} className="w-full accent-amber-500 bg-slate-900 h-2 rounded-lg cursor-pointer" />
-                        <div className="flex justify-between text-[9px] text-slate-500 font-bold">
-                          <span>완전 침몰 (0)</span><span className="text-amber-400">강제 높이: {manualStage.toFixed(2)}단계</span><span>구조 완료 (7)</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
                   <div className="bg-white/5 p-3 rounded-xl flex justify-between items-center">
                     <div>
                       <h4 className="text-xs font-bold text-slate-300">수련회 시뮬레이터</h4>
-                      <p className="text-[9px] text-slate-500">가상 성찰 데이터 주입</p>
+                      <p className="text-[9px] text-slate-500">모의 데이터 인입</p>
                     </div>
                     <div className="flex gap-1">
                       <button onClick={injectMockParticipants} className="px-2 py-1 bg-indigo-900 text-indigo-100 rounded text-[10px] font-bold">모의 인원 주입</button>
                       <button onClick={triggerResetSessions} className="px-2 py-1 bg-red-950 text-red-300 rounded text-[10px] font-bold">리셋</button>
                     </div>
                   </div>
-
                   <div className="space-y-2">
                     <span className="text-xs font-bold text-slate-400">📝 흘러가는 죄 고백 목록 ({surrenders.length}건)</span>
                     <button onClick={handleForceTestFloat} className="text-[10px] text-cyan-400 hover:underline block font-bold">+ 종이카드 가상 투하 테스트</button>
@@ -779,9 +749,8 @@
                 {!hasRegistered ? (
                   <div className="my-auto bg-slate-900/70 border p-6 rounded-2xl space-y-4 shadow-2xl">
                     <h3 className="text-lg font-bold text-white text-center">마음의 타이타닉 탑승</h3>
-                    <p className="text-xs text-slate-400 leading-relaxed text-center">본인의 수련회 조와 이름을 정확히 적고 예식에 참여하십시오.</p>
                     <form onSubmit={handleJoinRetreat} className="space-y-4">
-                      <input type="text" placeholder="예: 3조 김성찰" value={nickname} onChange={e=>setNickname(e.target.value)} required className="w-full bg-slate-950 border rounded-xl px-4 py-3 text-xs" />
+                      <input type="text" placeholder="예: 3조 김요한" value={nickname} onChange={e=>setNickname(e.target.value)} required className="w-full bg-slate-950 border rounded-xl px-4 py-3 text-xs" />
                       <button type="submit" className="w-full py-3 bg-cyan-600 text-white font-bold text-xs rounded-xl">예식 참여하기</button>
                     </form>
                   </div>
